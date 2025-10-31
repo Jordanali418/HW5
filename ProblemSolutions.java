@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Jordan Ali / 002
  *
  *   This java file contains the problem solutions of isSubSet, findKthLargest,
  *   and sort2Arrays methods. You should utilize the Java Collection Framework for
@@ -31,10 +31,20 @@ class ProblemSolutions {
      */
 
     public boolean isSubset(int list1[], int list2[]) {
+        /*
+        pseudocode
+        create empty set S
+        for each x in A -> add x to S
+        for each y in B -> if y not in S
+                return false
+        return true
+         */
+        java.util.HashSet<Integer> seen = new java.util.HashSet<>();
+        for (int x : list1) seen.add(x);
+        for (int y : list2) if (!seen.contains(y)) return false;
 
-        // ADD YOU CODE HERE -- DON'T FORGET TO ADD YOR NAME AT TOP OF FILE
 
-        return false;
+        return true;
     }
 
 
@@ -52,10 +62,23 @@ class ProblemSolutions {
      */
 
     public int findKthLargest(int[] array, int k) {
+        /*
+        pseudocode
+        create min heap H size of <= k
+        each element in array
+            - add to H
+            - if H.size > k -> remove smallest
 
-        // ADD YOUR CODE HERE
+        return top of H
+         */
+        java.util.PriorityQueue<Integer> pq = new java.util.PriorityQueue<>();
+        for (int x : array) {
+            pq.offer(x);
+            if (pq.size() > k) pq.poll();
+        }
+        if (pq.size() < k) throw new IllegalArgumentException("k too large");
+        return pq.peek();
 
-        return 0;
     }
 
 
@@ -73,10 +96,20 @@ class ProblemSolutions {
      */
 
     public int[] sort2Arrays(int[] array1, int[] array2) {
-
-        // ADD YOU CODE HERE
-
-        return null;
+    /*
+    pseudocode
+        create min heap H
+        add all elements from both arrays -> H
+        create new array result of H.size
+        remove each element from H into result
+        return result
+     */
+        java.util.PriorityQueue<Integer> pq = new java.util.PriorityQueue<>();
+        for (int x : array1) pq.offer(x);
+        for (int y : array2) pq.offer(y);
+        int[] out = new int[pq.size()];
+        int i = 0;
+        while (!pq.isEmpty()) out[i++] = pq.poll();
+        return out;
     }
-
 }

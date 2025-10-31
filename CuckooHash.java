@@ -1,6 +1,6 @@
 /******************************************************************
  *
- *   YOUR NAME / SECTION NUMBER
+ *   Jordan Ali / 002
  *
  *   Note, additional comments provided throughout this source code
  *   is for educational purposes
@@ -244,14 +244,36 @@ public class CuckooHash<K, V> {
      * @param value the value of the element to add
 	 */
 
- 	public void put(K key, V value) {
+	public void put(K key, V value) {
+		if (key == null) throw new IllegalArgumentException("null key");
 
-		// ADD YOUR CODE HERE - DO NOT FORGET TO ADD YOUR NAME AT TOP OF FILE.
-		// Also make sure you read this method's prologue above, it should help
-		// you. Especially the two HINTS in the prologue.
+		int p1 = hash1(key);
+		int p2 = hash2(key);
 
-		return;
+		if (table[p1] != null && key.equals(table[p1].getBucKey()) && value.equals(table[p1].getValue())) return;
+		if (table[p2] != null && key.equals(table[p2].getBucKey()) && value.equals(table[p2].getValue())) return;
+
+		Bucket<K,V> cur = new Bucket<>(key, value);
+		boolean useH1 = true;
+		int kicks = 0;
+		int limit = CAPACITY;
+
+		while (kicks <= limit) {
+			int idx = useH1 ? hash1(cur.getBucKey()) : hash2(cur.getBucKey());
+			if (table[idx] == null) { table[idx] = cur; return; }
+			if (cur.getBucKey().equals(table[idx].getBucKey()) && cur.getValue().equals(table[idx].getValue())) return;
+			Bucket<K,V> kicked = table[idx];
+			table[idx] = cur;
+			cur = kicked;
+			boolean kickedWasAtH1 = (idx == hash1(cur.getBucKey()));
+			useH1 = !kickedWasAtH1;
+			kicks++;
+		}
+
+		rehash();
+		put(cur.getBucKey(), cur.getValue());
 	}
+
 
 
 	/**
